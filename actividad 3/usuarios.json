@@ -1,0 +1,8 @@
+[
+  {
+    "id": 2,
+    "name": "actualizacion",
+    "email": "actualizacion@example.com",
+    "password": "scrypt:32768:8:1$4UGsh5hdSr9CYppt$cedc7e31d6b3609a6971981db7fe83ec0d7187e82746b1cbdc2dc4fab2f93847ec0b2052fc077a864c4ef3800e56ae0da3fc963ec9a35d744ca6ba578552454c"
+  }
+]
