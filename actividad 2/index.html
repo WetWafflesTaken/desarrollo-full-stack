@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Programas de Ayuda Animal</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin:0; padding:0; background:#fdfdfd; color:#333; 
+        background-image:url("https://images.unsplash.com/photo-1544568100-847a948585b9?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDI5fHx8ZW58MHx8fHx8");
+        background-position: center; background-size: cover; background-attachment: fixed;}
+    header { background:#4CAF50; color:white; padding:1rem; text-align:center; }
+    form { margin: auto; margin-bottom: 20px; width: 300px; padding: 1em; border: 1px solid #a6d8a8; border-radius: 1em; background-color: rgba(255, 255, 255, 0.8); justify-content: center;}
+    ul { list-style: none; padding: 0; margin: 0; }
+    form li + li { margin-top: 1em; }
+    label { display: inline-block; width: 90px; text-align: right; }
+    textarea { vertical-align: top; height: 5em; }
+    nav ul { list-style:none; display:flex; justify-content:center; gap:1.5rem; padding:0; margin:1rem 0 0; }
+    nav a { color:white; text-decoration:none; font-weight:bold; }
+    nav a:hover { color:#ffeb3b; }
+    section { padding:2rem; max-width:900px; margin:auto; }
+    section h2 { color:#4CAF50; background-color: rgba(255, 255, 255, 0.8); border-radius: 12px; padding:10px;}
+    ul.program-list { list-style:none; padding:0; }
+    ul.program-list li { background:#f0f8f5; border-left:5px solid #4CAF50; padding:1rem; margin-bottom:1rem; border-radius:5px; }
+    .program-header { display:flex; justify-content:space-between; align-items:center; }
+    .program-desc { margin-top:0.5rem; font-size:0.9rem; color:#555; }
+    .actions button { margin-left:0.5rem; padding:0.4rem 0.8rem; border:none; border-radius:4px; cursor:pointer; }
+    .edit-btn { background:#ffc107; color:#333; }
+    .delete-btn { background:#f44336; color:white; }
+    .add-form { margin-bottom:1rem; }
+    .add-form input, .add-form textarea { padding:0.5rem; width:70%; margin-bottom:0.5rem; display:block; }
+    .add-form button { background:#4CAF50; color:white; border:none; padding:0.6rem 1rem; border-radius:5px; cursor:pointer; }
+    footer { background:#333; color:white; text-align:center; padding:1.5rem; margin-top:2rem; }
+    footer h2 { color:#ffeb3b; margin-top:0; }
+  </style>
+</head>
+<body>
+  <header>
+    <nav>
+        <ul>
+            <h1>Ayuda canina</h1>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/0/09/White_paw_print.png" 
+                style="width:70px;height:60px;margin-left:15px;" alt="pata">
+        </ul>
+    </nav>
+    <nav>
+      <ul>
+        <li><a href="#programas">Programas</a></li>
+        <li><a href="#voluntariado">Voluntariado</a></li>
+        <li><a href="#contacto">Contacto</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main>
+    <section>
+        <h2>Somos una empresa privada que se dedica al cuidado de los perros, 
+            nuestra mision es disminuir el abuso de estos animales de cualquier manera posible</h2>
+    </section>
+    <section id="programas">
+      <h2>Nuestros Programas</h2>
+      <div class="add-form">
+        <input type="text" id="programName" placeholder="Nombre del programa">
+        <textarea id="programDesc" placeholder="Descripción breve"></textarea>
+        <button onclick="addProgram()">Añadir</button>
+      </div>
+      <ul class="program-list" id="programList"></ul>
+    </section>
+    <section>
+        <form method="post">
+            <p style="justify-content: center;">Tienes algo que decir?</p>
+            <ul>
+                <li>
+                    <label for="name">Nombre:</label>
+                    <input type="text" id="name" name="user_name"/>
+                </li>
+                <li>
+                    <label for="mail">Correo electronico:</label>
+                    <input type="email" id="mail" name="user_mail"/>
+                </li>
+                <li>
+                    <label for="msg">Mensaje:</label>
+                    <textarea id="msg" name="user_message"></textarea>
+                </li>
+                <li class="reset">
+                <button type="submit" style="margin-left:90px">Envie su mensaje</button>
+            </li>
+            </ul>
+        </form>
+    </section>
+  </main>
+
+  <footer id="contacto">
+    <h2>Contacto</h2>
+    <p>Email: contacto@ayudaanimal.org</p>
+    <p>Teléfono: +52 55 1234 5678</p>
+    <p>&copy; 2026 Programas de Ayuda Animal</p>
+  </footer>
+
+  <script>
+    const programList = document.getElementById('programList');
+
+    // Cargar programas desde LocalStorage al iniciar
+    window.onload = loadPrograms;
+
+    function loadPrograms() {
+      const programs = JSON.parse(localStorage.getItem('programs')) || [];
+      programList.innerHTML = '';
+      programs.forEach(p => createProgramElement(p.name, p.desc));
+    }
+
+    function savePrograms() {
+      const programs = Array.from(programList.querySelectorAll('li')).map(li => {
+        return {
+          name: li.querySelector('.program-name').textContent,
+          desc: li.querySelector('.program-desc').textContent
+        };
+      });
+      localStorage.setItem('programs', JSON.stringify(programs));
+    }
+
+    function addProgram() {
+      const nameInput = document.getElementById('programName');
+      const descInput = document.getElementById('programDesc');
+      const name = nameInput.value.trim();
+      const desc = descInput.value.trim();
+      if (name === '') return;
+
+      createProgramElement(name, desc);
+      savePrograms();
+      nameInput.value = '';
+      descInput.value = '';
+    }
+
+    function createProgramElement(name, desc) {
+      const li = document.createElement('li');
+      li.innerHTML = `
+        <div class="program-header">
+          <strong class="program-name">${name}</strong>
+          <div class="actions">
+            <button class="edit-btn" onclick="editProgram(this)">Editar</button>
+            <button class="delete-btn" onclick="deleteProgram(this)">Eliminar</button>
+          </div>
+        </div>
+        <p class="program-desc">${desc}</p>
+      `;
+      programList.appendChild(li);
+    }
+
+    function editProgram(button) {
+      const li = button.closest('li');
+      const nameEl = li.querySelector('.program-name');
+      const descEl = li.querySelector('.program-desc');
+
+      const newName = prompt('Editar nombre del programa:', nameEl.textContent);
+      const newDesc = prompt('Editar descripción del programa:', descEl.textContent);
+
+      if (newName !== null && newName.trim() !== '') {
+        nameEl.textContent = newName.trim();
+      }
+      if (newDesc !== null) {
+        descEl.textContent = newDesc.trim();
+      }
+      savePrograms();
+    }
+
+    function deleteProgram(button) {
+      const li = button.closest('li');
+      programList.removeChild(li);
+      savePrograms();
+    }
+  </script>
+</body>
+</html>
